@@ -1,0 +1,19 @@
+class Json
+{
+    public static write(filePath, object)
+    {
+        if( is_array(object) )
+        {
+            file_put_contents( filePath, json_encode(object) );
+        }
+        else
+        {
+            file_put_contents( filePath, json_encode( array(object) ) );
+        }
+    }
+
+    public static read(filePath)
+    {
+        json_decode(file_get_contents(filePath), true);
+    }
+}

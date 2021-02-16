@@ -18,7 +18,7 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
       if( $wordsLength > 0 )
       {
           switch($words[0])
-          {
+          {                
               case "class":
                   $className = $words[1];
                   $class .= $value;
@@ -35,20 +35,29 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
               case "public":
               case "protected":
               case "private":
+                  $header = $words[0];
+                  if( strcmp($words[1], "static") == 0 )
+                  {
+                      $header .= " static";
+                      unset($words[1]);
+                      $words = array_values($words);
+                      $wordsLength--;
+                  }
                   // member variable.
-                  $class .= $words[0];
                   if( strcmp($words[1], "var") == 0 )
                   {
                       $memberVariable[] = $words[2];
-                      $class .= " $" . $words[2];
-                      
-                      for ($i = 3; $i <$wordsLength; $i++) {
-                          $class .= $words[$i];
-                      }
-                      $class .= ";";
+
+                      $value = preg_replace(
+                        '/([\s,();=])('.$words[2].')([\s,();=])/', "$1 $" . $words[2]. " $3", $value);
+
+                      $value = preg_replace(
+                        '/([\s,();=])(var)([\s,();=])/', "", $value);
+
+                      $class .= $value;
                       break;
                   }
-                  $class .= " function ";
+                  $class .= $header . " function ";
   
                   // member method.
                   if( strcmp($words[1], $className) == 0 )

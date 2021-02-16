@@ -2,7 +2,6 @@
 namespace sazanami;
 require_once "../require.php";
 
-$file = new File("test.txt", "w");
-$file->write("hoge");
+Json::write("hoge.txt", new Monolog());
 
 ?>

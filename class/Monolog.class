@@ -1,0 +1,12 @@
+class Monolog
+{
+    public var dateTime = null;
+    public var title = "";
+    public var text  = "";
+
+    public Monolog()
+    {
+        date_default_timezone_set('Asia/Tokyo');
+        dateTime = date("Y/m/d H:i:s");
+    }
+}

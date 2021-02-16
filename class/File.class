@@ -1,0 +1,37 @@
+class File
+{
+    private var fp = null;
+
+    public File(filePath, mode)
+    {
+        fp = fopen( filePath, mode );
+    }
+
+    public ~File()
+    {        
+        if( fp != null )
+        {
+            fclose( fp );
+        }
+    }
+
+    public write(text)
+    {
+        fwrite( fp, text );
+    }
+
+    public writeLine(text)
+    {
+        fputs( fp, text );
+    }
+
+    public writeJson(object)
+    {
+        fwrite( fp, json_encode(object) );
+    }
+
+    public readLine()
+    {
+        return fgets( fp );
+    }
+}

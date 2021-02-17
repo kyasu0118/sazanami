@@ -6,7 +6,7 @@ class Monolog
 
     public Monolog()
     {
-        date_default_timezone_set('Asia/Tokyo');
+        date_default_timezone_set("Asia/Tokyo");
         dateTime = date("Y/m/d H:i:s");
     }
 }

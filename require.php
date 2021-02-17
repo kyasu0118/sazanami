@@ -8,6 +8,13 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
 
     foreach (file($filePath) as &$value) 
     {
+        preg_match_all('/".*?"/', $value, $matches,PREG_PATTERN_ORDER);
+
+        for ($i = 0; $i <count($matches[0]); $i++)
+        {
+            $value = str_replace($matches[0][$i], "#".$i, $value);
+        }
+
         $value = str_replace("(", " ( ", $value);
         $value = str_replace(")", " ) ", $value);
         $value = str_replace("{", " { ", $value);
@@ -27,6 +34,18 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
         $words = array_values($words);
         $wordsLength = count($words);
 
+        for ($i = 0; $i <$wordsLength; $i++)
+        {
+            for ($j = 0; $j <count($matches[0]); $j++)
+            {
+                if( strcmp($words[$i],"#".$j) == 0 )
+                {
+                    $words[$i] = $matches[0][$j];
+                    break;
+                }
+            }
+        }
+ 
         if( $wordsLength > 0 )
         {
             $index = 0;

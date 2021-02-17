@@ -14,6 +14,6 @@ class Json
 
     public static read(filePath)
     {
-        json_decode(file_get_contents(filePath), true);
+        return json_decode(file_get_contents(filePath), true);
     }
 }

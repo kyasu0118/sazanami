@@ -225,6 +225,30 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
             {
                 $this->fromJson( json_decode(file_get_contents($filePath), true) );
             }
+            public static function saveArray($filePath, $array)
+            {
+                if( is_array($array) )
+                {
+                    file_put_contents( $filePath, json_encode($array) );
+                }
+                else
+                {
+                    file_put_contents( $filePath, json_encode( array($array) ) );
+                }                
+            }
+            public static function loadArray($filePath)
+            {
+                $array = json_decode(file_get_contents($filePath), true);
+
+                $result = [];
+                foreach ($array as &$value) 
+                {
+                    $object = new ' . $className .'();
+                    $object->fromJson( $value );
+                    $result[] = $object;
+                } 
+                return $result;  
+            }            
         }
         ';
     eval( $class );

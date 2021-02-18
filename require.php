@@ -4,6 +4,7 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
     $class = "namespace sazanami;";
     $className = "";
     $memberVariable = [];
+    $memberVariableType = [];
     $localVariable = [];
 
     foreach (file($filePath) as &$value) 
@@ -27,6 +28,7 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
         $value = str_replace("+", " + ", $value);
         $value = str_replace("*", " * ", $value);
         $value = str_replace("/", " / ", $value);
+        $value = str_replace(":", " : ", $value);
         $words = preg_split("/[\s]+/", $value);
         $words = array_filter($words, function($value){
             return empty($value) == false || $value === '0' || $value === 0;
@@ -71,7 +73,16 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
                         $index++;
                         $memberVariable[] = $words[$index];
                         $class .= "$" . $words[$index];
-                        $index++;      
+                        if( $index+2 < $wordsLength && strcmp($words[$index+1],":") == 0 )
+                        {
+                            $memberVariableType[] = $words[$index+2];
+                            $index++;
+                        }
+                        else
+                        {
+                            $memberVariableType[] = null;
+                        }
+                        $index++;
                        
                         for ($i = $index; $i <$wordsLength; $i++)
                         {
@@ -179,6 +190,43 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
             }
         }
     }
+    $class = substr($class, 0, -1);
+    $class .= 
+        '
+            public function toJson()
+            {
+                return json_encode( $this );
+            }
+            public function fromJson($json)
+            {
+        ';
+    for( $i=0; $i<count($memberVariable); $i++ )
+    {
+        $class .= '$this->' . $memberVariable[$i] . '=';
+
+        if( $memberVariableType[$i] != null )
+        {
+            $class .= 'new ' . $memberVariableType[$i] . '();';
+            $class .= '$' . $memberVariable[$i] . '->fromJson('.'$json["' . $memberVariable[$i] . '"]);';
+        }
+        else
+        {
+            $class .= '$json["' . $memberVariable[$i] . '"];';
+        }
+    }
+    $class .=
+        '
+            }
+            public function save($filePath)
+            {
+                file_put_contents( $filePath, $this->toJson() );
+            }
+            public function load($filePath)
+            {
+                $this->fromJson( json_decode(file_get_contents($filePath), true) );
+            }
+        }
+        ';
     eval( $class );
 }
 ?>

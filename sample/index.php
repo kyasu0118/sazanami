@@ -2,8 +2,7 @@
 namespace sazanami;
 require_once "../require.php";
 
-$monolog = new Monolog();
-
-print_r( $monolog->toJson() );
+$htmlTemplate = new HtmlTemplate("plain");
+$htmlTemplate->write( "hoge.html", "test", "きたきた");
 
 ?>

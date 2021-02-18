@@ -1,0 +1,18 @@
+class HtmlTemplate
+{
+    private var html = "";
+
+    public HtmlTemplate(name)
+    {
+        html = file_get_contents(__DIR__."/template/".name.".html");
+    }
+
+    public write(filePath,title, body)
+    {
+        var result = str_replace("#TITLE#", htmlspecialchars(title), html);
+
+        result = str_replace("#BODY#", htmlspecialchars(body), result);
+
+        file_put_contents( filePath, result );
+    }
+}

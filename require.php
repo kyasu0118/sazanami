@@ -76,7 +76,7 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
                         if( $index+2 < $wordsLength && strcmp($words[$index+1],":") == 0 )
                         {
                             $memberVariableType[] = $words[$index+2];
-                            $index++;
+                            $index+=2;
                         }
                         else
                         {
@@ -199,6 +199,17 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
             }
             public function fromJson($json)
             {
+                if( $json == null )
+                {';
+                    for( $i=0; $i<count($memberVariable); $i++ )
+                    {
+                        $class .= '$this->' . $memberVariable[$i] . '=null;';
+                    }     
+    $class .=
+        '
+                }
+                else
+                {
         ';
     for( $i=0; $i<count($memberVariable); $i++ )
     {
@@ -207,7 +218,7 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
         if( $memberVariableType[$i] != null )
         {
             $class .= 'new ' . $memberVariableType[$i] . '();';
-            $class .= '$' . $memberVariable[$i] . '->fromJson('.'$json["' . $memberVariable[$i] . '"]);';
+            $class .= '$this->' . $memberVariable[$i] . '->fromJson('.'$json["' . $memberVariable[$i] . '"]);';
         }
         else
         {
@@ -215,7 +226,7 @@ foreach ( glob( __DIR__ . "/class/*.class" ) as $filePath )
         }
     }
     $class .=
-        '
+        '       }
             }
             public function save($filePath)
             {
